@@ -8,6 +8,7 @@ public class CharacterMovement : MonoBehaviour {
 
 
     [SerializeField] Transform head;
+    [SerializeField] LayerMask collideLayerMack;
 
     [SerializeField] float mouseSensitivity = 0.1f;
     [Header("Movement")]
@@ -32,9 +33,6 @@ public class CharacterMovement : MonoBehaviour {
 
 
     private void Awake() {
-        Cursor.lockState = CursorLockMode.Locked;
-
-
         capsuleCollider = GetComponent<CapsuleCollider>();
     }
     private void Update() {
@@ -42,7 +40,6 @@ public class CharacterMovement : MonoBehaviour {
     }
     private void FixedUpdate() {
         Movement();
-        Gravity();
     }
     private void HandleLook() {
         lookDireciton += new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y")) * mouseSensitivity;
@@ -63,41 +60,34 @@ public class CharacterMovement : MonoBehaviour {
         moveVelocity = Vector3.MoveTowards(moveVelocity, desiredVelocity, moveAcceliration * Time.fixedDeltaTime);
         Vector3 remaining = (transform.forward * moveVelocity.z + transform.right * moveVelocity.x) * Time.fixedDeltaTime;
 
-        debugCapsule.position = transform.position + remaining;
+        debugCapsule.position = transform.position + remaining; // DEBUG
 
-
-        transform.position += CollideAndSlide(remaining, transform.position, false);
-    }
-    private void Gravity() {
         gravityVelocity = Mathf.Max(gravityVelocity + gravityAcceliration * Time.fixedDeltaTime, maxGravityVelocity);
-        Vector3 remaining = Vector3.up * gravityVelocity * Time.fixedDeltaTime;
+        Vector3 gravityMoveVector = Vector3.up * gravityVelocity * Time.fixedDeltaTime;
 
-        transform.position += CollideAndSlide(remaining, transform.position, true);
+        Vector3 moveVector = CollideAndSlide(transform.position, remaining, false);
+        moveVector += CollideAndSlide(transform.position + moveVector, gravityMoveVector, true);
+        transform.position += moveVector;
     }
     // https://youtu.be/YR6Q7dUz2uk?si=lxioSsyEBnbE1Ea5
-    private Vector3 CollideAndSlide(Vector3 velocity, Vector3 position, bool gravityPass, int depth = 0, Vector3 initialVelocity = new Vector3()) {
-        if (depth == 0) initialVelocity = velocity;
+    private Vector3 CollideAndSlide(Vector3 position, Vector3 velocity, bool gravityPass, int currentBounce = 0, Vector3 initialVelocity = new Vector3()) {
+        if (currentBounce == 0) initialVelocity = velocity;
 
         int maxBounces = 3;
         float skinWidth = 0.01f;
         float maxNormalAngleToClimb = 60;
 
-        Bounds bounds = capsuleCollider.bounds;
-        bounds.Expand(-2 * skinWidth);
+        if (currentBounce >= maxBounces) return Vector3.zero;
 
-        if (depth >= maxBounces) return Vector3.zero;
-
-        float dist = velocity.magnitude + skinWidth;
-
-        if (CastSelf(velocity.normalized * dist, skinWidth, out RaycastHit hit)) {
+        if (CastSelf(position, velocity, out RaycastHit hit)) {
             Vector3 snapToSurface = velocity.normalized * (hit.distance - skinWidth);
             Vector3 remaining = velocity - snapToSurface;
-            float normalAngle = Vector3.Angle(Vector3.up, hit.normal);
+            float angleOfNormal = Vector3.Angle(Vector3.up, hit.normal);
 
             if (snapToSurface.magnitude <= skinWidth) snapToSurface = Vector3.zero;
 
             // nomal ground / slope
-            if (normalAngle <= maxNormalAngleToClimb) {
+            if (angleOfNormal <= maxNormalAngleToClimb) {
                 if (gravityPass) return snapToSurface;
 
                 remaining = ProjectAndScale(remaining, hit.normal);
@@ -119,7 +109,7 @@ public class CharacterMovement : MonoBehaviour {
                 else remaining = ProjectAndScale(remaining, hit.normal) * scale;
             }
 
-            return snapToSurface + CollideAndSlide(remaining, position + snapToSurface, gravityPass, depth + 1, initialVelocity);
+            return snapToSurface + CollideAndSlide(position + snapToSurface, remaining, gravityPass, currentBounce + 1, initialVelocity);
         }
 
         return velocity;
@@ -132,21 +122,21 @@ public class CharacterMovement : MonoBehaviour {
         return vector;
     }
     private bool IsGrounded() {
-        return CastSelf(Vector3.down, 0.01f, out RaycastHit hit);
+        return CastSelf(transform.position, Vector3.down, out RaycastHit hit);
     }
-    public bool CastSelf(Vector3 direction, float skinWidth, out RaycastHit hit) {
+    public bool CastSelf(Vector3 position, Vector3 direction, out RaycastHit hit) {
         // Get Parameters associated with the KCC
-        Vector3 center = capsuleCollider.center + transform.position;
+        Vector3 center = capsuleCollider.center + position;
         float radius = capsuleCollider.radius;
         float height = capsuleCollider.height;
 
         // Get top and bottom points of collider
-        Vector3 bottom = center + Vector3.down * (height / 2 - radius) + Vector3.up * skinWidth;
-        Vector3 top = center + Vector3.up * (height / 2 - radius) + Vector3.down * skinWidth;
+        Vector3 bottom = center + Vector3.down * (height / 2 - radius);
+        Vector3 top = center + Vector3.up * (height / 2 - radius);
 
         // Check what objects this collider will hit when cast with this configuration excluding itself
         IEnumerable<RaycastHit> hits = Physics.CapsuleCastAll(
-            top, bottom, radius - skinWidth, direction.normalized, direction.magnitude, ~0, QueryTriggerInteraction.Ignore)
+            top, bottom, radius, direction.normalized, direction.magnitude, collideLayerMack, QueryTriggerInteraction.Ignore)
             .Where(hit => hit.collider.transform != transform);
         bool didHit = hits.Count() > 0;
 
@@ -161,8 +151,27 @@ public class CharacterMovement : MonoBehaviour {
         return didHit;
     }
 
+    public Vector3 GetItemDropPoint() {
+        Vector3 desiredPoint = head.position + head.forward;
+        if(Physics.Raycast(head.position, desiredPoint, out RaycastHit hit)) desiredPoint = desiredPoint.normalized * (hit.distance -  0.01f);
+        return desiredPoint;
+    }
+    public bool LookingAt(out RaycastHit hit) {
+        float lookDistance = 3f;
 
+        IEnumerable<RaycastHit> hits = Physics.RaycastAll(head.position, head.forward, lookDistance, ~0, QueryTriggerInteraction.Ignore)
+            .Where(hit => hit.collider.transform != transform);
+        bool didHit = hits.Count() > 0;
 
+        // Find the closest objects hit
+        float closestDist = didHit ? Enumerable.Min(hits.Select(hit => hit.distance)) : 0;
+        IEnumerable<RaycastHit> closestHit = hits.Where(hit => hit.distance == closestDist);
 
+        // Get the first hit object out of the things the player collides with
+        hit = closestHit.FirstOrDefault();
+
+        // Return if any objects were hit
+        return didHit;
+    }
 
 }

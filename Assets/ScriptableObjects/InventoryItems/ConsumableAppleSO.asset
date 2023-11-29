@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22a05617a2922ae4489c40f6bcb264da, type: 3}
+  m_Name: ConsumableAppleSO
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 36678234106806963, guid: b54cfee9ff0a0004eb56d0ac915f18b8, type: 3}
+  sprite: {fileID: 21300000, guid: 5f4e300c3a7bac24fae0ca758179dbde, type: 3}
+  compatibleCells: 0000000002000000
+  health: 10
