@@ -4,11 +4,15 @@ using UnityEngine;
 
 public class Enemy : Entity {
 
+    [SerializeField] private List<InventoryItemSO> posibleItemsToDrop;
+
     private void Awake() {
-        health = 50;
         entityName = "Enemy";
     }
 
-
+    protected override void PrepairItemsToDropAndDie() {
+        if (posibleItemsToDrop.Count != 0) itemsToDropOnDied.Add(posibleItemsToDrop[Random.Range(0, posibleItemsToDrop.Count)]);
+        base.PrepairItemsToDropAndDie();
+    }
 
 }

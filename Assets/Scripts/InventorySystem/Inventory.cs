@@ -9,7 +9,7 @@ public class Inventory : MonoBehaviour {
     static public Inventory Instance { get; private set; }
 
     // 0-9 Bag, 10 Hand, 11-13 QuikSlot, 14 Amulet, 15 Jacket, 16 Pants, 17 Shoes
-    [SerializeField] List<Cell> cells;
+    public List<Cell> cells;
 
     private CharacterMovement CharacterMovement;
 
