@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 36678234106806963, guid: b54cfee9ff0a0004eb56d0ac915f18b8, type: 3}
   sprite: {fileID: 21300000, guid: 5f4e300c3a7bac24fae0ca758179dbde, type: 3}
-  compatibleCells: 0000000002000000
+  compatibleCellsByType: 0000000002000000
   health: 10

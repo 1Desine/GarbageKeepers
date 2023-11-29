@@ -10,15 +10,18 @@ public class SpawnManager : MonoBehaviour {
         Instance = this;
     }
 
-    public void SpawnObject(GameObject obj, Vector3 position, Quaternion roitation) {
+    static public void SpawnObject(GameObject obj, Vector3 position, Quaternion roitation) {
         Instantiate(obj, position, roitation);
     }
-    public void DropInventoryItem(InventoryItemSO inventoryItemSO, Vector3 desiredPosition) {
+    static public bool TryDropInventoryItem(InventoryItemSO inventoryItemSO, Vector3 desiredPosition) {
         if (Physics.Raycast(desiredPosition, Vector3.down, out RaycastHit hit)) {
-            desiredPosition = hit.point;
-            SpawnObject(inventoryItemSO.prefab, desiredPosition, Quaternion.Euler(hit.normal));
-        } else {
+            SpawnObject(inventoryItemSO.prefab, hit.point, Quaternion.Euler(hit.normal));
+            Debug.Log(hit.point);
+            return true;
+        }
+        else {
             Debug.LogError("me. Can't drop item");
+            return false;
         }
     }
 

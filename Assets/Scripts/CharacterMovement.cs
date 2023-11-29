@@ -42,13 +42,13 @@ public class CharacterMovement : MonoBehaviour {
         Movement();
     }
     private void HandleLook() {
-        lookDireciton += new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y")) * mouseSensitivity;
+        lookDireciton += InputManager.LookV2D() * mouseSensitivity;
         lookDireciton.y = Mathf.Clamp(lookDireciton.y, -90, 90);
         transform.eulerAngles = Vector3.up * lookDireciton.x;
         head.localEulerAngles = Vector3.right * -lookDireciton.y;
     }
     private void Movement() {
-        Vector2 inputDirection = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        Vector2 inputDirection = InputManager.MoveV2N();
 
         Vector3 desiredVelocity = new Vector3(inputDirection.x, 0, inputDirection.y).normalized * maxWalkSpeed;
         if (Input.GetKey(KeyCode.LeftShift)) { // if sprint
@@ -152,8 +152,9 @@ public class CharacterMovement : MonoBehaviour {
     }
 
     public Vector3 GetItemDropPoint() {
+        float dropDistance = 1f;
         Vector3 desiredPoint = head.position + head.forward;
-        if(Physics.Raycast(head.position, desiredPoint, out RaycastHit hit)) desiredPoint = desiredPoint.normalized * (hit.distance -  0.01f);
+        if(Physics.Raycast(head.position, head.forward, out RaycastHit hit, dropDistance)) desiredPoint = head.position + head.forward * (hit.distance -  0.01f);
         return desiredPoint;
     }
     public bool LookingAt(out RaycastHit hit) {

@@ -8,10 +8,12 @@ using UnityEngine;
 public class Inventory : MonoBehaviour {
     static public Inventory Instance { get; private set; }
 
-
+    // 0-9 Bag, 10 Hand, 11-13 QuikSlot, 14 Amulet, 15 Jacket, 16 Pants, 17 Shoes
     [SerializeField] List<Cell> cells;
 
     private CharacterMovement CharacterMovement;
+
+    private bool inventoryIsVisible;
 
     private void Awake() {
         Cursor.lockState = CursorLockMode.Locked;
@@ -25,17 +27,19 @@ public class Inventory : MonoBehaviour {
     }
     private void Update() {
         if (Input.GetKeyDown(KeyCode.Tab)) {
-            InventoryUI.Instance.Show();
-            Cursor.lockState = CursorLockMode.None;
-        }
-        if (Input.GetKeyDown(KeyCode.Escape)) {
-            InventoryUI.Instance.Hide();
-            Cursor.lockState = CursorLockMode.Locked;
+            inventoryIsVisible = !inventoryIsVisible;
+            if (inventoryIsVisible) {
+                InventoryUI.Instance.Show();
+                Cursor.lockState = CursorLockMode.None;
+            }
+            else {
+                InventoryUI.Instance.Hide();
+                Cursor.lockState = CursorLockMode.Locked;
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.E)) {
-            if(CharacterMovement.LookingAt(out RaycastHit hit)) {
-                Debug.Log("E, I'm looking at something");
+            if (CharacterMovement.LookingAt(out RaycastHit hit)) {
                 if (hit.collider.TryGetComponent(out ItemObject itemObject)) TryPickUpItem(itemObject);
             }
         }
@@ -43,17 +47,36 @@ public class Inventory : MonoBehaviour {
 
     public void TryDropItem(int index) {
         if (cells[index].inventoryItemSO != null) {
-            SpawnManager.Instance.DropInventoryItem(cells[index].inventoryItemSO, CharacterMovement.GetItemDropPoint());
-            cells[index].inventoryItemSO = null;
-
-            InventoryUI.Instance.UpdateItems(cells);
+            if (SpawnManager.TryDropInventoryItem(cells[index].inventoryItemSO, CharacterMovement.GetItemDropPoint())) {
+                cells[index].inventoryItemSO = null;
+                InventoryUI.Instance.UpdateItems(cells);
+            }
         }
     }
     private void TryPickUpItem(ItemObject itemObject) {
-        cells[0].inventoryItemSO = itemObject.consumableItemSO;
-        Destroy(itemObject.gameObject);
+        int placedItemIndex = -1;
 
-        InventoryUI.Instance.UpdateItems(cells);
+        // search for best slot for the item, not in the Bag
+        for (int i = 10; i < cells.Count; i++) {
+            if (itemObject.inventoryItemSO.compatibleCellsByType.Contains(cells[i].cellType)) {
+                placedItemIndex = i;
+                break;
+            }
+        }
+        // search for ampty slot in the Bag [0;9]
+        if (placedItemIndex == -1) {
+            for (int i = 0; i < 10; i++) {
+                if (itemObject.inventoryItemSO.compatibleCellsByType.Contains(cells[i].cellType)) {
+                    placedItemIndex = i;
+                    break;
+                }
+            }
+        }
+        if (placedItemIndex != -1) {
+            cells[placedItemIndex].SetItem(itemObject.inventoryItemSO);
+            Destroy(itemObject.gameObject);
+            InventoryUI.Instance.UpdateItems(cells);
+        }
     }
 
 
@@ -64,19 +87,17 @@ public class Inventory : MonoBehaviour {
 
         public CellType cellType;
         public enum CellType {
-            Bag,
-            MainHand,
-            SecondaryHand,
-            Jacket,
-            Pants,
-            Shoe,
+            Bag, //0-9
+            Hand, // 10
+            QuickSlot, // 11-13
+            Amulet, // 14
+            Jacket, // 15
+            Pants, // 16
+            Shoes, // 17
         }
 
-        public void AddItem(int index, InventoryItemSO item) {
-
-        }
-        public void RemoveItem(int index) {
-
+        public void SetItem(InventoryItemSO inventoryItemSO) {
+            this.inventoryItemSO = inventoryItemSO;
         }
     }
 

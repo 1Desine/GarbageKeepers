@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7746367852239021117}
   - component: {fileID: 7493220959354555888}
   m_Layer: 6
-  m_Name: Apple
+  m_Name: SwordObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -63,7 +63,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: aef6261fc1399b343bb12c6febc11a34, type: 2}
+  - {fileID: 2100000, guid: da4b64568b86d64408f1749081b11c35, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -118,4 +118,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9a82b22681a13e4bb06c20f297bcf54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  consumableItemSO: {fileID: 11400000, guid: 68f8502291dc1894fbc9e704fe2beb7d, type: 2}
+  inventoryItemSO: {fileID: 11400000, guid: 1bcddbae478472b4fb80341939af23f0, type: 2}

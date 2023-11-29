@@ -9,7 +9,7 @@ public abstract class InventoryItemSO : ScriptableObject {
     public Sprite sprite;
 
 
-    public List<Inventory.Cell.CellType> compatibleCells;
+    public List<Inventory.Cell.CellType> compatibleCellsByType;
     
     
 

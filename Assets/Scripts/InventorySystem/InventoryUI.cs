@@ -28,22 +28,11 @@ public class InventoryUI : MonoBehaviour {
     private void Start() {
         Hide();
     }
-
-    private void Update() {
-        if (Input.GetKeyDown(KeyCode.Q)) {
-            clickData.position = Input.mousePosition;
-            clickResults.Clear();
-            raycaster.Raycast(clickData, clickResults);
-
-
-            List<InventoryCellUI> clickedObjects = new List<InventoryCellUI>();
-            foreach (RaycastResult result in clickResults) {
-                if (result.gameObject.TryGetComponent(out InventoryCellUI inventoryCellUI)) clickedObjects.Add(inventoryCellUI);
-            }
-            if (clickedObjects.Count > 1) Debug.LogError("me. UI elements are stacked: " + clickResults.Count);
-
-            if (clickedObjects.Count != 0) Inventory.Instance.TryDropItem(clickedObjects[0].index);
-        }
+    private void OnEnable() {
+        InputManager.OnInventoryDropItemDown += TryDropItemAtPosition;
+    }
+    private void OnDisable() {
+        InputManager.OnInventoryDropItemDown -= TryDropItemAtPosition;
     }
 
     public void UpdateItems(List<Inventory.Cell> inventoryCellsList) {
@@ -58,6 +47,21 @@ public class InventoryUI : MonoBehaviour {
     }
     public void Show() {
         gameObject.SetActive(true);
+    }
+
+    private void TryDropItemAtPosition(Vector2 mousePosition) {
+        clickData.position = mousePosition;
+        clickResults.Clear();
+        raycaster.Raycast(clickData, clickResults);
+
+
+        List<InventoryCellUI> clickedObjects = new List<InventoryCellUI>();
+        foreach (RaycastResult result in clickResults) {
+            if (result.gameObject.TryGetComponent(out InventoryCellUI inventoryCellUI)) clickedObjects.Add(inventoryCellUI);
+        }
+        if (clickedObjects.Count > 1) Debug.LogError("me. UI elements are stacked: " + clickResults.Count);
+
+        if (clickedObjects.Count != 0) Inventory.Instance.TryDropItem(clickedObjects[0].index);
     }
 
 }

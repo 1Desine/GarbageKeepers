@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 723ecb0955285464c951582a85a8ab06, type: 3}
+  m_Name: WeaponSwordSO
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 36678234106806963, guid: b6836facf38ce9b4abf0860a9418addb, type: 3}
+  sprite: {fileID: 21300000, guid: 364b8c542c4aa2d458514b005e48b3a8, type: 3}
+  compatibleCellsByType: 0000000001000000
+  damage: 20
