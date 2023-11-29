@@ -42,7 +42,7 @@ public class InputManager : MonoBehaviour {
 
     static public Vector2 MoveV2N() => Instance.inputActions.Character.MoveV2N.ReadValue<Vector2>();
     static public Vector2 LookV2D() => Instance.inputActions.Character.LookV2D.ReadValue<Vector2>();
-
+    static public bool GetSpringButton() => Instance.inputActions.Character.SprintB.inProgress;
 
     private void ChangeState(InputState inputState) {
         if (this.inputState == inputState) {

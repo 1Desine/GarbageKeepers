@@ -2063,7 +2063,7 @@ Transform:
   m_GameObject: {fileID: 813332863}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.562, y: 2.5, z: -0.034}
+  m_LocalPosition: {x: 2.562, y: 0, z: -0.034}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2089,14 +2089,13 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 55
   mouseSensitivity: 0.05
-  moveAcceliration: 20
-  maxWalkSpeed: 3
-  maxRunForwandSpeed: 5
-  maxRunDiagnalSpeed: 4
-  gravityAcceliration: -10
+  moveAcceliration: 30
+  walkSpeed: 4
+  runSpeed: 6
+  maxClimbAngle: 60
+  gravityAcceliration: -20
   maxGravityVelocity: -10
-  jumpTime: 0
-  jumpSpeed: 0
+  jumpSpeed: 10
   debugCapsule: {fileID: 986103701}
 --- !u!136 &813332866
 CapsuleCollider:
@@ -3311,6 +3310,8 @@ MonoBehaviour:
   maxHealth: 25
   posibleItemsToDrop:
   - {fileID: 11400000, guid: 61325a7b83de96e48b84ed2f65763ca3, type: 2}
+  - {fileID: 11400000, guid: 61325a7b83de96e48b84ed2f65763ca3, type: 2}
+  - {fileID: 11400000, guid: 1bcddbae478472b4fb80341939af23f0, type: 2}
 --- !u!1 &1513833991
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -11,18 +12,18 @@ public class CharacterMovement : MonoBehaviour {
     [SerializeField] float mouseSensitivity = 0.1f;
     [Header("Movement")]
     [SerializeField] float moveAcceliration;
-    [SerializeField] float maxWalkSpeed;
-    [SerializeField] float maxRunForwandSpeed;
-    [SerializeField] float maxRunDiagnalSpeed;
+    [SerializeField] float walkSpeed;
+    [SerializeField] float runSpeed;
     Vector3 moveVelocity;
+
+    float skinWidth = 0.01f;
+    [SerializeField] float maxClimbAngle = 60;
     [Header("Gravity")]
     [SerializeField] float gravityAcceliration;
     [SerializeField] float maxGravityVelocity;
     float gravityVelocity;
     [Header("Jump")]
-    [SerializeField] float jumpTime;
     [SerializeField] float jumpSpeed;
-    float lastJumpTime;
 
     Vector2 lookDireciton;
 
@@ -33,11 +34,24 @@ public class CharacterMovement : MonoBehaviour {
     private void Awake() {
         capsuleCollider = GetComponent<CapsuleCollider>();
     }
+    private void OnEnable() {
+        InputManager.OnJumpDown += InputManager_OnJumpDown;
+    }
+    private void OnDisable() {
+        InputManager.OnJumpDown -= InputManager_OnJumpDown;
+    }
     private void Update() {
         HandleLook();
     }
     private void FixedUpdate() {
         Movement();
+    }
+
+    private void InputManager_OnJumpDown() {
+        if (IsGrounded()) {
+            gravityVelocity = Mathf.Max(0, gravityVelocity);
+            gravityVelocity += jumpSpeed;
+        }
     }
     private void HandleLook() {
         lookDireciton += InputManager.LookV2D() * mouseSensitivity;
@@ -48,13 +62,9 @@ public class CharacterMovement : MonoBehaviour {
     private void Movement() {
         Vector2 inputDirection = InputManager.MoveV2N();
 
-        Vector3 desiredVelocity = new Vector3(inputDirection.x, 0, inputDirection.y).normalized * maxWalkSpeed;
-        if (Input.GetKey(KeyCode.LeftShift)) { // if sprint
-            if (desiredVelocity.z > 0) {
-                if (desiredVelocity.x != 0) desiredVelocity.z = maxRunDiagnalSpeed;
-                else desiredVelocity.z = maxRunForwandSpeed;
-            }
-        }
+        Vector3 desiredVelocity = new Vector3(inputDirection.x, 0, inputDirection.y).normalized * walkSpeed;
+        if (InputManager.GetSpringButton()) if (desiredVelocity.z > 0) desiredVelocity = desiredVelocity.normalized * runSpeed;
+
         moveVelocity = Vector3.MoveTowards(moveVelocity, desiredVelocity, moveAcceliration * Time.fixedDeltaTime);
         Vector3 remaining = (transform.forward * moveVelocity.z + transform.right * moveVelocity.x) * Time.fixedDeltaTime;
 
@@ -72,8 +82,6 @@ public class CharacterMovement : MonoBehaviour {
         if (currentBounce == 0) initialVelocity = velocity;
 
         int maxBounces = 3;
-        float skinWidth = 0.01f;
-        float maxNormalAngleToClimb = 60;
 
         if (currentBounce >= maxBounces) return Vector3.zero;
 
@@ -85,7 +93,7 @@ public class CharacterMovement : MonoBehaviour {
             if (snapToSurface.magnitude <= skinWidth) snapToSurface = Vector3.zero;
 
             // nomal ground / slope
-            if (angleOfNormal <= maxNormalAngleToClimb) {
+            if (angleOfNormal <= maxClimbAngle) {
                 if (gravityPass) return snapToSurface;
 
                 remaining = ProjectAndScale(remaining, hit.normal);
@@ -120,7 +128,10 @@ public class CharacterMovement : MonoBehaviour {
         return vector;
     }
     private bool IsGrounded() {
-        return CastSelf(transform.position, Vector3.down, out RaycastHit hit);
+        if (CastSelf(transform.position, Vector3.down * 0.01f, out RaycastHit hit)) {
+            if (Vector3.Angle(Vector3.up, hit.normal) <= maxClimbAngle) return true;
+        }
+        return false;
     }
     public bool CastSelf(Vector3 position, Vector3 direction, out RaycastHit hit) {
         // Get Parameters associated with the KCC
@@ -129,12 +140,12 @@ public class CharacterMovement : MonoBehaviour {
         float height = capsuleCollider.height;
 
         // Get top and bottom points of collider
-        Vector3 bottom = center + Vector3.down * (height / 2 - radius);
-        Vector3 top = center + Vector3.up * (height / 2 - radius);
+        Vector3 bottom = center + Vector3.down * (height / 2 - radius - skinWidth);
+        Vector3 top = center + Vector3.up * (height / 2 - radius - skinWidth);
 
         // Check what objects this collider will hit when cast with this configuration excluding itself
         IEnumerable<RaycastHit> hits = Physics.CapsuleCastAll(
-            top, bottom, radius, direction.normalized, direction.magnitude, collideLayerMack, QueryTriggerInteraction.Ignore)
+            top, bottom, radius - skinWidth, direction.normalized, direction.magnitude + skinWidth, collideLayerMack, QueryTriggerInteraction.Ignore)
             .Where(hit => hit.collider.transform != transform);
         bool didHit = hits.Count() > 0;
 
@@ -152,7 +163,7 @@ public class CharacterMovement : MonoBehaviour {
     public Vector3 GetItemDropPoint() {
         float dropDistance = 1f;
         Vector3 desiredPoint = head.position + head.forward;
-        if(Physics.Raycast(head.position, head.forward, out RaycastHit hit, dropDistance)) desiredPoint = head.position + head.forward * (hit.distance -  0.01f);
+        if (Physics.Raycast(head.position, head.forward, out RaycastHit hit, dropDistance)) desiredPoint = head.position + head.forward * (hit.distance - 0.01f);
         return desiredPoint;
     }
     public bool LookingAt(float lookDistance, out RaycastHit hit) {

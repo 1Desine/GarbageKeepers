@@ -51,6 +51,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "SprintB",
+                    "type": "Button",
+                    "id": "82d603c2-ccda-4ad8-8409-f6f6bc5051f2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "QuickSlot1",
                     "type": "Button",
                     "id": "7886c8bd-7516-4d04-995d-b70adc8fb68f",
@@ -208,6 +217,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "QuickSlot1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cbc6eac7-d826-4b0f-bd94-3947784b915d",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SprintB",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

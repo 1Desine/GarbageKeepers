@@ -73,6 +73,15 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""SprintB"",
+                    ""type"": ""Button"",
+                    ""id"": ""82d603c2-ccda-4ad8-8409-f6f6bc5051f2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""QuickSlot1"",
                     ""type"": ""Button"",
                     ""id"": ""7886c8bd-7516-4d04-995d-b70adc8fb68f"",
@@ -232,6 +241,17 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""action"": ""QuickSlot1"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cbc6eac7-d826-4b0f-bd94-3947784b915d"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SprintB"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -313,6 +333,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         m_Character_Jump = m_Character.FindAction("Jump", throwIfNotFound: true);
         m_Character_Attack = m_Character.FindAction("Attack", throwIfNotFound: true);
         m_Character_PickUpItemB = m_Character.FindAction("PickUpItemB", throwIfNotFound: true);
+        m_Character_SprintB = m_Character.FindAction("SprintB", throwIfNotFound: true);
         m_Character_QuickSlot1 = m_Character.FindAction("QuickSlot1", throwIfNotFound: true);
         m_Character_QuickSlot2 = m_Character.FindAction("QuickSlot2", throwIfNotFound: true);
         m_Character_QuickSlot3 = m_Character.FindAction("QuickSlot3", throwIfNotFound: true);
@@ -387,6 +408,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Character_Jump;
     private readonly InputAction m_Character_Attack;
     private readonly InputAction m_Character_PickUpItemB;
+    private readonly InputAction m_Character_SprintB;
     private readonly InputAction m_Character_QuickSlot1;
     private readonly InputAction m_Character_QuickSlot2;
     private readonly InputAction m_Character_QuickSlot3;
@@ -399,6 +421,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Character_Jump;
         public InputAction @Attack => m_Wrapper.m_Character_Attack;
         public InputAction @PickUpItemB => m_Wrapper.m_Character_PickUpItemB;
+        public InputAction @SprintB => m_Wrapper.m_Character_SprintB;
         public InputAction @QuickSlot1 => m_Wrapper.m_Character_QuickSlot1;
         public InputAction @QuickSlot2 => m_Wrapper.m_Character_QuickSlot2;
         public InputAction @QuickSlot3 => m_Wrapper.m_Character_QuickSlot3;
@@ -426,6 +449,9 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @PickUpItemB.started += instance.OnPickUpItemB;
             @PickUpItemB.performed += instance.OnPickUpItemB;
             @PickUpItemB.canceled += instance.OnPickUpItemB;
+            @SprintB.started += instance.OnSprintB;
+            @SprintB.performed += instance.OnSprintB;
+            @SprintB.canceled += instance.OnSprintB;
             @QuickSlot1.started += instance.OnQuickSlot1;
             @QuickSlot1.performed += instance.OnQuickSlot1;
             @QuickSlot1.canceled += instance.OnQuickSlot1;
@@ -454,6 +480,9 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @PickUpItemB.started -= instance.OnPickUpItemB;
             @PickUpItemB.performed -= instance.OnPickUpItemB;
             @PickUpItemB.canceled -= instance.OnPickUpItemB;
+            @SprintB.started -= instance.OnSprintB;
+            @SprintB.performed -= instance.OnSprintB;
+            @SprintB.canceled -= instance.OnSprintB;
             @QuickSlot1.started -= instance.OnQuickSlot1;
             @QuickSlot1.performed -= instance.OnQuickSlot1;
             @QuickSlot1.canceled -= instance.OnQuickSlot1;
@@ -549,6 +578,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
         void OnPickUpItemB(InputAction.CallbackContext context);
+        void OnSprintB(InputAction.CallbackContext context);
         void OnQuickSlot1(InputAction.CallbackContext context);
         void OnQuickSlot2(InputAction.CallbackContext context);
         void OnQuickSlot3(InputAction.CallbackContext context);
