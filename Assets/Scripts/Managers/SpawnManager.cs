@@ -16,7 +16,6 @@ public class SpawnManager : MonoBehaviour {
     static public bool TryDropInventoryItem(InventoryItemSO inventoryItemSO, Vector3 desiredPosition) {
         if (Physics.Raycast(desiredPosition, Vector3.down, out RaycastHit hit)) {
             SpawnObject(inventoryItemSO.prefab, hit.point, Quaternion.Euler(hit.normal));
-            Debug.Log(hit.point);
             return true;
         }
         else {

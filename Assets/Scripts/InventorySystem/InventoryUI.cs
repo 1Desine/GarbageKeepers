@@ -25,14 +25,11 @@ public class InventoryUI : MonoBehaviour {
         }
     }
 
-    private void Start() {
-        Hide();
-    }
     private void OnEnable() {
-        InputManager.OnInventoryDropItemDown += TryDropItemAtPosition;
+        InputManager.OnInventoryDropItemDown += InputManager_OnInventoryDropItemDown;
     }
     private void OnDisable() {
-        InputManager.OnInventoryDropItemDown -= TryDropItemAtPosition;
+        InputManager.OnInventoryDropItemDown -= InputManager_OnInventoryDropItemDown;
     }
 
     public void UpdateItems(List<Inventory.Cell> inventoryCellsList) {
@@ -49,7 +46,7 @@ public class InventoryUI : MonoBehaviour {
         gameObject.SetActive(true);
     }
 
-    private void TryDropItemAtPosition(Vector2 mousePosition) {
+    private void InputManager_OnInventoryDropItemDown(Vector2 mousePosition) {
         clickData.position = mousePosition;
         clickResults.Clear();
         raycaster.Raycast(clickData, clickResults);

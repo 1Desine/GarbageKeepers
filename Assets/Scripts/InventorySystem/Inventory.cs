@@ -13,7 +13,6 @@ public class Inventory : MonoBehaviour {
 
     private CharacterMovement CharacterMovement;
 
-    private bool inventoryIsVisible;
 
     private void Awake() {
         Cursor.lockState = CursorLockMode.Locked;
@@ -25,31 +24,29 @@ public class Inventory : MonoBehaviour {
 
         CharacterMovement = GetComponent<CharacterMovement>();
     }
-    private void Update() {
-        if (Input.GetKeyDown(KeyCode.Tab)) {
-            inventoryIsVisible = !inventoryIsVisible;
-            if (inventoryIsVisible) {
-                InventoryUI.Instance.Show();
-                Cursor.lockState = CursorLockMode.None;
-            }
-            else {
-                InventoryUI.Instance.Hide();
-                Cursor.lockState = CursorLockMode.Locked;
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.E)) {
-            if (CharacterMovement.LookingAt(out RaycastHit hit)) {
-                if (hit.collider.TryGetComponent(out ItemObject itemObject)) TryPickUpItem(itemObject);
-            }
-        }
+    private void OnEnable() {
+        InputManager.OnPickUpItem += InputManager_OnPickUpItem;
+    }
+    private void OnDisable() {
+        InputManager.OnPickUpItem -= InputManager_OnPickUpItem;
     }
 
+
+    public void RemoveItem(int index) {
+        cells[index].inventoryItemSO = null;
+        InventoryUI.Instance.UpdateItems(cells);
+    }
+
+    public void InputManager_OnPickUpItem() {
+        float pickUpDistance = 3;
+        if (CharacterMovement.LookingAt(pickUpDistance, out RaycastHit hit)) {
+            if (hit.collider.TryGetComponent(out ItemObject itemObject)) TryPickUpItem(itemObject);
+        }
+    }
     public void TryDropItem(int index) {
         if (cells[index].inventoryItemSO != null) {
             if (SpawnManager.TryDropInventoryItem(cells[index].inventoryItemSO, CharacterMovement.GetItemDropPoint())) {
-                cells[index].inventoryItemSO = null;
-                InventoryUI.Instance.UpdateItems(cells);
+                RemoveItem(index);
             }
         }
     }
@@ -79,6 +76,14 @@ public class Inventory : MonoBehaviour {
         }
     }
 
+    public bool TryGetItem(int index,out InventoryItemSO item) {
+        if (cells[index].inventoryItemSO is InventoryItemSO foundItem) {
+            item = foundItem;
+            return true;
+        }
+        item = null;
+        return false;
+    }
 
     [Serializable]
     public class Cell {

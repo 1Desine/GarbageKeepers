@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngineInternal;
-using static UnityEditor.PlayerSettings;
 
 public class CharacterMovement : MonoBehaviour {
 
@@ -157,9 +155,7 @@ public class CharacterMovement : MonoBehaviour {
         if(Physics.Raycast(head.position, head.forward, out RaycastHit hit, dropDistance)) desiredPoint = head.position + head.forward * (hit.distance -  0.01f);
         return desiredPoint;
     }
-    public bool LookingAt(out RaycastHit hit) {
-        float lookDistance = 3f;
-
+    public bool LookingAt(float lookDistance, out RaycastHit hit) {
         IEnumerable<RaycastHit> hits = Physics.RaycastAll(head.position, head.forward, lookDistance, ~0, QueryTriggerInteraction.Ignore)
             .Where(hit => hit.collider.transform != transform);
         bool didHit = hits.Count() > 0;

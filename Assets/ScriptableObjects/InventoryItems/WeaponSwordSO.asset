@@ -14,5 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 36678234106806963, guid: b6836facf38ce9b4abf0860a9418addb, type: 3}
   sprite: {fileID: 21300000, guid: 364b8c542c4aa2d458514b005e48b3a8, type: 3}
+  itemName: Sword
+  tag: 1
   compatibleCellsByType: 0000000001000000
   damage: 20
+  cooldown: 1
+  attackDistance: 2

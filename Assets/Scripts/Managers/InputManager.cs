@@ -10,8 +10,10 @@ public class InputManager : MonoBehaviour {
     static public Action OnJumpDown = () => { };
     static public Action OnAttackDown = () => { };
     static public Action<Vector2> OnInventoryDropItemDown = (_) => { };
+    static public Action OnPickUpItem = () => { };
+    static public Action<int> OnUseQuickSlot = (_) => { };
 
-    private InputState inputState;
+    private InputState inputState = InputState.Character;
     private enum InputState {
         Character,
         Inventory,
@@ -26,11 +28,15 @@ public class InputManager : MonoBehaviour {
 
         inputActions.Character.Jump.started += _ => OnJumpDown();
         inputActions.Character.Attack.started += _ => OnAttackDown();
+        inputActions.Character.PickUpItemB.started += (_) => OnPickUpItem();
+        inputActions.Character.QuickSlot1.started += (_) => OnUseQuickSlot(0);
+        inputActions.Character.QuickSlot2.started += (_) => OnUseQuickSlot(1);
+        inputActions.Character.QuickSlot3.started += (_) => OnUseQuickSlot(2);
 
         inputActions.Inventory.DropItemB.started += (_) => OnInventoryDropItemDown(inputActions.Inventory.CursorV2.ReadValue<Vector2>());
         inputActions.Inventory.InventoryB.started += (_) => ChangeState(InputState.Inventory);
-
-
+    }
+    private void Start() {
         ChangeState(InputState.Character);
     }
 
@@ -40,8 +46,6 @@ public class InputManager : MonoBehaviour {
 
     private void ChangeState(InputState inputState) {
         if (this.inputState == inputState) {
-            // Enter state Character
-            Debug.Log("Enter InputState.Character");
             this.inputState = InputState.Character;
             inputActions.Character.Attack.Enable();
             inputActions.Character.MoveV2N.Enable();
@@ -49,27 +53,30 @@ public class InputManager : MonoBehaviour {
 
             inputActions.Inventory.DropItemB.Disable();
 
+            InventoryUI.Instance.Hide();
+            Cursor.lockState = CursorLockMode.Locked;
+
             return;
         }
 
         switch (inputState) {
             case InputState.Inventory: {
-                // Enter Inventory
-                Debug.Log("Enter InputState.Inventory");
                 this.inputState = InputState.Inventory;
                 inputActions.Character.Attack.Disable();
                 inputActions.Character.LookV2D.Disable();
 
                 inputActions.Inventory.DropItemB.Enable();
 
+                InventoryUI.Instance.Show();
+                Cursor.lockState = CursorLockMode.None;
+
                 break;
             }
             case InputState.Settings: {
-                // Enter Settings
-                Debug.Log("Enter InputState.Settings");
                 this.inputState = InputState.Settings;
                 inputActions.Character.Attack.Disable();
                 inputActions.Character.MoveV2N.Disable();
+                inputActions.Character.LookV2D.Disable();
 
                 break;
             }

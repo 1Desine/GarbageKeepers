@@ -62,6 +62,42 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PickUpItemB"",
+                    ""type"": ""Button"",
+                    ""id"": ""297a4b5e-f182-43c8-9c23-cf54328437c9"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""QuickSlot1"",
+                    ""type"": ""Button"",
+                    ""id"": ""7886c8bd-7516-4d04-995d-b70adc8fb68f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""QuickSlot2"",
+                    ""type"": ""Button"",
+                    ""id"": ""e13063f0-ce46-45fc-9908-e1ba55ca56db"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""QuickSlot3"",
+                    ""type"": ""Button"",
+                    ""id"": ""9b1e9bf4-b796-4da0-849c-ab039ed1e79a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -152,6 +188,50 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Attack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""29b56791-e8d6-45cf-a94e-bf638f6b66c2"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PickUpItemB"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0b6e98f0-fcc3-4759-92d1-6b1e6684ca77"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickSlot2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1e7a7a98-44d1-4ac8-9033-909a1e2d5875"",
+                    ""path"": ""<Keyboard>/v"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickSlot3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2f7194a1-69bb-4ec3-a036-7e25f92f14c0"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickSlot1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -232,6 +312,10 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         m_Character_LookV2D = m_Character.FindAction("LookV2D", throwIfNotFound: true);
         m_Character_Jump = m_Character.FindAction("Jump", throwIfNotFound: true);
         m_Character_Attack = m_Character.FindAction("Attack", throwIfNotFound: true);
+        m_Character_PickUpItemB = m_Character.FindAction("PickUpItemB", throwIfNotFound: true);
+        m_Character_QuickSlot1 = m_Character.FindAction("QuickSlot1", throwIfNotFound: true);
+        m_Character_QuickSlot2 = m_Character.FindAction("QuickSlot2", throwIfNotFound: true);
+        m_Character_QuickSlot3 = m_Character.FindAction("QuickSlot3", throwIfNotFound: true);
         // Inventory
         m_Inventory = asset.FindActionMap("Inventory", throwIfNotFound: true);
         m_Inventory_CursorV2 = m_Inventory.FindAction("CursorV2", throwIfNotFound: true);
@@ -302,6 +386,10 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Character_LookV2D;
     private readonly InputAction m_Character_Jump;
     private readonly InputAction m_Character_Attack;
+    private readonly InputAction m_Character_PickUpItemB;
+    private readonly InputAction m_Character_QuickSlot1;
+    private readonly InputAction m_Character_QuickSlot2;
+    private readonly InputAction m_Character_QuickSlot3;
     public struct CharacterActions
     {
         private @InputActions m_Wrapper;
@@ -310,6 +398,10 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         public InputAction @LookV2D => m_Wrapper.m_Character_LookV2D;
         public InputAction @Jump => m_Wrapper.m_Character_Jump;
         public InputAction @Attack => m_Wrapper.m_Character_Attack;
+        public InputAction @PickUpItemB => m_Wrapper.m_Character_PickUpItemB;
+        public InputAction @QuickSlot1 => m_Wrapper.m_Character_QuickSlot1;
+        public InputAction @QuickSlot2 => m_Wrapper.m_Character_QuickSlot2;
+        public InputAction @QuickSlot3 => m_Wrapper.m_Character_QuickSlot3;
         public InputActionMap Get() { return m_Wrapper.m_Character; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -331,6 +423,18 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @Attack.started += instance.OnAttack;
             @Attack.performed += instance.OnAttack;
             @Attack.canceled += instance.OnAttack;
+            @PickUpItemB.started += instance.OnPickUpItemB;
+            @PickUpItemB.performed += instance.OnPickUpItemB;
+            @PickUpItemB.canceled += instance.OnPickUpItemB;
+            @QuickSlot1.started += instance.OnQuickSlot1;
+            @QuickSlot1.performed += instance.OnQuickSlot1;
+            @QuickSlot1.canceled += instance.OnQuickSlot1;
+            @QuickSlot2.started += instance.OnQuickSlot2;
+            @QuickSlot2.performed += instance.OnQuickSlot2;
+            @QuickSlot2.canceled += instance.OnQuickSlot2;
+            @QuickSlot3.started += instance.OnQuickSlot3;
+            @QuickSlot3.performed += instance.OnQuickSlot3;
+            @QuickSlot3.canceled += instance.OnQuickSlot3;
         }
 
         private void UnregisterCallbacks(ICharacterActions instance)
@@ -347,6 +451,18 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @Attack.started -= instance.OnAttack;
             @Attack.performed -= instance.OnAttack;
             @Attack.canceled -= instance.OnAttack;
+            @PickUpItemB.started -= instance.OnPickUpItemB;
+            @PickUpItemB.performed -= instance.OnPickUpItemB;
+            @PickUpItemB.canceled -= instance.OnPickUpItemB;
+            @QuickSlot1.started -= instance.OnQuickSlot1;
+            @QuickSlot1.performed -= instance.OnQuickSlot1;
+            @QuickSlot1.canceled -= instance.OnQuickSlot1;
+            @QuickSlot2.started -= instance.OnQuickSlot2;
+            @QuickSlot2.performed -= instance.OnQuickSlot2;
+            @QuickSlot2.canceled -= instance.OnQuickSlot2;
+            @QuickSlot3.started -= instance.OnQuickSlot3;
+            @QuickSlot3.performed -= instance.OnQuickSlot3;
+            @QuickSlot3.canceled -= instance.OnQuickSlot3;
         }
 
         public void RemoveCallbacks(ICharacterActions instance)
@@ -432,6 +548,10 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         void OnLookV2D(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
+        void OnPickUpItemB(InputAction.CallbackContext context);
+        void OnQuickSlot1(InputAction.CallbackContext context);
+        void OnQuickSlot2(InputAction.CallbackContext context);
+        void OnQuickSlot3(InputAction.CallbackContext context);
     }
     public interface IInventoryActions
     {
