@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ public class Inventory : MonoBehaviour {
     // 0-9 Bag, 10 Hand, 11-13 QuikSlot, 14 Amulet, 15 Jacket, 16 Pants, 17 Shoes
     public List<Cell> cells;
 
-    private CharacterMovement CharacterMovement;
+    private PlayerController CharacterMovement;
 
 
     private void Awake() {
@@ -22,7 +23,7 @@ public class Inventory : MonoBehaviour {
     private void Start() {
         InventoryUI.Instance.UpdateItems(cells);
 
-        CharacterMovement = GetComponent<CharacterMovement>();
+        CharacterMovement = GetComponent<PlayerController>();
     }
     private void OnEnable() {
         InputManager.OnPickUpItem += InputManager_OnPickUpItem;
@@ -51,32 +52,28 @@ public class Inventory : MonoBehaviour {
         }
     }
     private void TryPickUpItem(ItemObject itemObject) {
-        int placedItemIndex = -1;
-
-        // search for best slot for the item, not in the Bag
-        for (int i = 10; i < cells.Count; i++) {
-            if (itemObject.inventoryItemSO.compatibleCellsByType.Contains(cells[i].cellType)) {
-                placedItemIndex = i;
-                break;
-            }
-        }
-        // search for ampty slot in the Bag [0;9]
-        if (placedItemIndex == -1) {
-            for (int i = 0; i < 10; i++) {
-                if (itemObject.inventoryItemSO.compatibleCellsByType.Contains(cells[i].cellType)) {
-                    placedItemIndex = i;
-                    break;
-                }
-            }
-        }
-        if (placedItemIndex != -1) {
-            cells[placedItemIndex].SetItem(itemObject.inventoryItemSO);
+        if (TryAddItemToInventory(itemObject.inventoryItemSO)) {
             Destroy(itemObject.gameObject);
             InventoryUI.Instance.UpdateItems(cells);
         }
     }
+    private bool TryAddItemToInventory(InventoryItemSO inventoryItemSO) {
+        int placedItemIndex = -1;
 
-    public bool TryGetItem(int index,out InventoryItemSO item) {
+        for (int i = 0; i < cells.Count; i++) {
+            // search for best slot for the item, not in the Bag and after that
+            // search for ampty slot in the Bag [0;9]
+            int c = (i + 10) % cells.Count;
+            if (cells[c].inventoryItemSO != null) continue;
+            if (inventoryItemSO.compatibleCellsByType.Contains(cells[c].cellType)) {
+                cells[placedItemIndex].SetItem(inventoryItemSO);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public bool TryGetItem(int index, out InventoryItemSO item) {
         if (cells[index].inventoryItemSO is InventoryItemSO foundItem) {
             item = foundItem;
             return true;

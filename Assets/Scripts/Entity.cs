@@ -9,14 +9,14 @@ public class Entity : MonoBehaviour {
 
     protected List<InventoryItemSO> itemsToDropOnDied = new List<InventoryItemSO>();
 
+    public void Heal(int heal) {
+        health += heal;
+        health = Mathf.Max(health, maxHealth);
+        Debug.Log("I got healed", this);
+    }
     public void Damage(int damage) {
         health -= damage;
         if (health <= 0) PrepairItemsToDropAndDie();
-    }
-    public void Heal(int heal) {
-        health += heal;
-        health = Mathf.Clamp(health, 0, maxHealth);
-        Debug.Log("I got healed", this);
     }
     protected virtual void PrepairItemsToDropAndDie() {
         Die();

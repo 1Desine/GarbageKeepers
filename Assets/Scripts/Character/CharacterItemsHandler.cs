@@ -3,7 +3,7 @@ using UnityEngine;
 public class CharacterItemsHandler : MonoBehaviour {
 
     private Inventory inventory;
-    private CharacterMovement movement;
+    private PlayerController movement;
     private Character character;
 
 
@@ -12,7 +12,7 @@ public class CharacterItemsHandler : MonoBehaviour {
 
     private void Awake() {
         inventory = GetComponent<Inventory>();
-        movement = GetComponent<CharacterMovement>();
+        movement = GetComponent<PlayerController>();
         character = GetComponent<Character>();
     }
 

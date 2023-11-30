@@ -2045,6 +2045,7 @@ GameObject:
   - component: {fileID: 813332866}
   - component: {fileID: 813332869}
   - component: {fileID: 813332865}
+  - component: {fileID: 813332870}
   - component: {fileID: 813332867}
   - component: {fileID: 813332868}
   m_Layer: 0
@@ -2085,18 +2086,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   head: {fileID: 117573955}
-  collideLayerMack:
-    serializedVersion: 2
-    m_Bits: 55
   mouseSensitivity: 0.05
   moveAcceliration: 30
   walkSpeed: 4
   runSpeed: 6
-  maxClimbAngle: 60
-  gravityAcceliration: -20
-  maxGravityVelocity: -10
-  jumpSpeed: 10
-  debugCapsule: {fileID: 986103701}
 --- !u!136 &813332866
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -2195,6 +2188,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 100
   maxHealth: 100
+--- !u!114 &813332870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 813332863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f1cd156710a2e0489b5e87d1c7272c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collideLayerMack:
+    serializedVersion: 2
+    m_Bits: 1
+  maxClimbAngle: 60
+  gravityAcceliration: -20
+  maxGravityVelocity: -30
+  jumpVelocity: 8
 --- !u!1 &818584231
 GameObject:
   m_ObjectHideFlags: 0

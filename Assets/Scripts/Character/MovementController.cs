@@ -3,18 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class CharacterMovement : MonoBehaviour {
+public class MovementController : MonoBehaviour {
 
 
-    [SerializeField] Transform head;
     [SerializeField] LayerMask collideLayerMack;
-
-    [SerializeField] float mouseSensitivity = 0.1f;
-    [Header("Movement")]
-    [SerializeField] float moveAcceliration;
-    [SerializeField] float walkSpeed;
-    [SerializeField] float runSpeed;
-    Vector3 moveVelocity;
 
     float skinWidth = 0.01f;
     [SerializeField] float maxClimbAngle = 60;
@@ -23,57 +15,26 @@ public class CharacterMovement : MonoBehaviour {
     [SerializeField] float maxGravityVelocity;
     float gravityVelocity;
     [Header("Jump")]
-    [SerializeField] float jumpSpeed;
-
-    Vector2 lookDireciton;
+    [SerializeField] float jumpVelocity;
 
     CapsuleCollider capsuleCollider;
-    [SerializeField] Transform debugCapsule;
-
 
     private void Awake() {
         capsuleCollider = GetComponent<CapsuleCollider>();
     }
-    private void OnEnable() {
-        InputManager.OnJumpDown += InputManager_OnJumpDown;
-    }
-    private void OnDisable() {
-        InputManager.OnJumpDown -= InputManager_OnJumpDown;
-    }
-    private void Update() {
-        HandleLook();
-    }
     private void FixedUpdate() {
-        Movement();
+        gravityVelocity = Mathf.Max(gravityVelocity + gravityAcceliration * Time.fixedDeltaTime, maxGravityVelocity);
     }
 
-    private void InputManager_OnJumpDown() {
+    public void TryJump() {
         if (IsGrounded()) {
             gravityVelocity = Mathf.Max(0, gravityVelocity);
-            gravityVelocity += jumpSpeed;
+            gravityVelocity += jumpVelocity;
         }
     }
-    private void HandleLook() {
-        lookDireciton += InputManager.LookV2D() * mouseSensitivity;
-        lookDireciton.y = Mathf.Clamp(lookDireciton.y, -90, 90);
-        transform.eulerAngles = Vector3.up * lookDireciton.x;
-        head.localEulerAngles = Vector3.right * -lookDireciton.y;
-    }
-    private void Movement() {
-        Vector2 inputDirection = InputManager.MoveV2N();
-
-        Vector3 desiredVelocity = new Vector3(inputDirection.x, 0, inputDirection.y).normalized * walkSpeed;
-        if (InputManager.GetSpringButton()) if (desiredVelocity.z > 0) desiredVelocity = desiredVelocity.normalized * runSpeed;
-
-        moveVelocity = Vector3.MoveTowards(moveVelocity, desiredVelocity, moveAcceliration * Time.fixedDeltaTime);
-        Vector3 remaining = (transform.forward * moveVelocity.z + transform.right * moveVelocity.x) * Time.fixedDeltaTime;
-
-        debugCapsule.position = transform.position + remaining; // DEBUG
-
-        gravityVelocity = Mathf.Max(gravityVelocity + gravityAcceliration * Time.fixedDeltaTime, maxGravityVelocity);
+    public void Move(Vector3 moveVelocity) {
+        Vector3 moveVector = CollideAndSlide(transform.position, moveVelocity, false);
         Vector3 gravityMoveVector = Vector3.up * gravityVelocity * Time.fixedDeltaTime;
-
-        Vector3 moveVector = CollideAndSlide(transform.position, remaining, false);
         moveVector += CollideAndSlide(transform.position + moveVector, gravityMoveVector, true);
         transform.position += moveVector;
     }
@@ -160,26 +121,5 @@ public class CharacterMovement : MonoBehaviour {
         return didHit;
     }
 
-    public Vector3 GetItemDropPoint() {
-        float dropDistance = 1f;
-        Vector3 desiredPoint = head.position + head.forward;
-        if (Physics.Raycast(head.position, head.forward, out RaycastHit hit, dropDistance)) desiredPoint = head.position + head.forward * (hit.distance - 0.01f);
-        return desiredPoint;
-    }
-    public bool LookingAt(float lookDistance, out RaycastHit hit) {
-        IEnumerable<RaycastHit> hits = Physics.RaycastAll(head.position, head.forward, lookDistance, ~0, QueryTriggerInteraction.Ignore)
-            .Where(hit => hit.collider.transform != transform);
-        bool didHit = hits.Count() > 0;
-
-        // Find the closest objects hit
-        float closestDist = didHit ? Enumerable.Min(hits.Select(hit => hit.distance)) : 0;
-        IEnumerable<RaycastHit> closestHit = hits.Where(hit => hit.distance == closestDist);
-
-        // Get the first hit object out of the things the player collides with
-        hit = closestHit.FirstOrDefault();
-
-        // Return if any objects were hit
-        return didHit;
-    }
 
 }
