@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
-    [SerializeField] Transform head;
+    [SerializeField] Animator characterAnimator;
+
+    [SerializeField] Transform neck;
     [SerializeField] float mouseSensitivity = 0.1f;
     Vector2 lookDireciton;
 
@@ -36,7 +38,7 @@ public class PlayerController : MonoBehaviour {
         lookDireciton += InputManager.LookV2D() * mouseSensitivity;
         lookDireciton.y = Mathf.Clamp(lookDireciton.y, -90, 90);
         transform.eulerAngles = Vector3.up * lookDireciton.x;
-        head.localEulerAngles = Vector3.right * -lookDireciton.y;
+        neck.localEulerAngles = Vector3.right * -lookDireciton.y;
     }
     private void Movement() {
         Vector2 inputDirection = InputManager.MoveV2N();
@@ -48,15 +50,19 @@ public class PlayerController : MonoBehaviour {
         Vector3 move = (transform.forward * moveLocalVelocity.z + transform.right * moveLocalVelocity.x) * Time.fixedDeltaTime;
 
         movementController.Move(move);
+
+        characterAnimator.SetFloat("MoveZ", moveLocalVelocity.z);
+        characterAnimator.SetFloat("MoveX", moveLocalVelocity.x);
+        characterAnimator.SetFloat("IsRuning", InputManager.GetSpringButton() ? 1 : 0);
     }
     public Vector3 GetItemDropPoint() {
         float dropDistance = 1f;
-        Vector3 desiredPoint = head.position + head.forward;
-        if (Physics.Raycast(head.position, head.forward, out RaycastHit hit, dropDistance)) desiredPoint = head.position + head.forward * (hit.distance - 0.01f);
+        Vector3 desiredPoint = neck.position + neck.forward;
+        if (Physics.Raycast(neck.position, neck.forward, out RaycastHit hit, dropDistance)) desiredPoint = neck.position + neck.forward * (hit.distance - 0.01f);
         return desiredPoint;
     }
     public bool LookingAt(float lookDistance, out RaycastHit hit) {
-        IEnumerable<RaycastHit> hits = Physics.RaycastAll(head.position, head.forward, lookDistance, ~0, QueryTriggerInteraction.Ignore)
+        IEnumerable<RaycastHit> hits = Physics.RaycastAll(neck.position, neck.forward, lookDistance, ~0, QueryTriggerInteraction.Ignore)
             .Where(hit => hit.collider.transform != transform);
         bool didHit = hits.Count() > 0;
 

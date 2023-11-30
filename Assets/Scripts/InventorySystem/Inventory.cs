@@ -58,15 +58,13 @@ public class Inventory : MonoBehaviour {
         }
     }
     private bool TryAddItemToInventory(InventoryItemSO inventoryItemSO) {
-        int placedItemIndex = -1;
-
         for (int i = 0; i < cells.Count; i++) {
             // search for best slot for the item, not in the Bag and after that
             // search for ampty slot in the Bag [0;9]
             int c = (i + 10) % cells.Count;
             if (cells[c].inventoryItemSO != null) continue;
             if (inventoryItemSO.compatibleCellsByType.Contains(cells[c].cellType)) {
-                cells[placedItemIndex].SetItem(inventoryItemSO);
+                cells[c].SetItem(inventoryItemSO);
                 return true;
             }
         }
