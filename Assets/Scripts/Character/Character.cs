@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TextCore.Text;
@@ -10,7 +11,7 @@ public class Character : Entity {
 
     [SerializeField] float reachDistance = 3f;
 
-    public RaidTask raidTask = null;
+    private RaidTask raidTask;
 
     private void Awake() {
         DontDestroyOnLoad(gameObject);
@@ -21,49 +22,35 @@ public class Character : Entity {
         inventory = GetComponent<Inventory>();
         playerController = GetComponent<PlayerController>();
 
-        SetGameLayerRecursive(visual, 7);
+        SetGameObjectLayerRecursive(visual, 7);
     }
-
-
     private void Start() {
         GameManager.RegisterCharacter(this);
-        GameManager.PlaceCharacterAtSpawnPosition(this);
     }
     private void OnDestroy() {
         GameManager.Unregistercharacter(this);
     }
     private void OnEnable() {
         InputManager.OnMainActionB += InputManager_OnMainActionB;
-        SceneManager.sceneLoaded += SceneManager_sceneLoaded;
     }
     private void OnDisable() {
         InputManager.OnMainActionB -= InputManager_OnMainActionB;
-        SceneManager.sceneLoaded -= SceneManager_sceneLoaded;
-    }
-
-    private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1) {
-        GameManager.PlaceCharacterAtSpawnPosition(this);
     }
     private void InputManager_OnMainActionB() {
         if (!playerController.LookingAt(reachDistance, out RaycastHit hit)) return;
 
-        if (hit.transform.root.TryGetComponent(out IInteractable interactable))  {
+        if (hit.transform.root.TryGetComponent(out IInteractable interactable)) {
             interactable.Interact(gameObject);
-            Debug.Log("Interacted");
         }
-
     }
 
+    private void SetGameObjectLayerRecursive(GameObject obj, int layer) {
+        obj.layer = layer;
+        foreach (Transform child in obj.transform) {
+            child.gameObject.layer = layer;
 
-    private void SetGameLayerRecursive(GameObject _go, int _layer) {
-        _go.layer = _layer;
-        foreach (Transform child in _go.transform) {
-            child.gameObject.layer = _layer;
-
-            Transform _HasChildren = child.GetComponentInChildren<Transform>();
-            if (_HasChildren != null)
-                SetGameLayerRecursive(child.gameObject, _layer);
-
+            Transform hasChildren = child.GetComponentInChildren<Transform>();
+            if (hasChildren != null) SetGameObjectLayerRecursive(child.gameObject, layer);
         }
     }
 
@@ -75,5 +62,9 @@ public class Character : Entity {
         base.PrepairAndDie();
     }
 
+
+
+    public RaidTask GetRaidTask() => raidTask;
+    public void SetRaidTask(RaidTask raidTask) => this.raidTask = raidTask;
 
 }

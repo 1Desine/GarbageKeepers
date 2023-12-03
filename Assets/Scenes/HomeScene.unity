@@ -530,7 +530,7 @@ Transform:
   m_GameObject: {fileID: 184706322}
   serializedVersion: 2
   m_LocalRotation: {x: 0.33844817, y: 0.1837624, z: 0.18376237, w: 0.9043869}
-  m_LocalPosition: {x: 0.38, y: 0, z: 2.58}
+  m_LocalPosition: {x: 0.38, y: 0, z: 3.614}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3431,6 +3431,7 @@ MonoBehaviour:
   - raidScene:
       asset: {fileID: 102900000, guid: dea4d74310258a849922263270dfc9e0, type: 3}
       guid: dea4d74310258a849922263270dfc9e0
+    data: some data
 --- !u!4 &1425371686
 Transform:
   m_ObjectHideFlags: 0

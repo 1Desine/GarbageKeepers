@@ -32,9 +32,9 @@ public class Inventory : MonoBehaviour {
 
     public void TryDropItem(int index) {
         if (cells[index].inventoryItemSO != null) {
-            if (SpawnManager.TryDropInventoryItem(cells[index].inventoryItemSO, CharacterMovement.GetItemDropPoint())) {
-                RemoveItem(index);
-            }
+            CharacterMovement.GetItemDropPositioning(out Vector3 position, out Quaternion rotation);
+            SpawnManager.SpawnObject(cells[index].inventoryItemSO.prefab, position, rotation);
+            RemoveItem(index);
         }
     }
     public bool TryPickUpItem(InventoryItemSO inventoryItemSO) {

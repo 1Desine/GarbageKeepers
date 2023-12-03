@@ -8,7 +8,6 @@ public class ScenePropperties : MonoBehaviour {
 
     private void Awake() {
         Instance = this;
-
     }
 
     static public List<Transform> GetSpawnPositions() {

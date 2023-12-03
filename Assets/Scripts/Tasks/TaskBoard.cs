@@ -9,7 +9,7 @@ public class TaskBoard : MonoBehaviour, IInteractable {
 
     public void Interact(GameObject actor) {
         if (actor.TryGetComponent(out Character character)) {
-            character.raidTask = tasksAvailible[0];
+            character.SetRaidTask(tasksAvailible[0]);
         }
 
     }

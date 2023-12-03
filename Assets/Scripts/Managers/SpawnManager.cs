@@ -11,24 +11,12 @@ public class SpawnManager : MonoBehaviour {
         DontDestroyOnLoad(gameObject);
 
         Instance = this;
-    }
-    private void Start() {
-        Character character = SpawnObject(playerPrefab, Vector3.zero, Quaternion.identity).GetComponent<Character>();
-        GameManager.PlaceCharacterAtSpawnPosition(character);
+
+        SpawnObject(playerPrefab, Vector3.zero, Quaternion.identity);
     }
 
-    static public GameObject SpawnObject(GameObject obj, Vector3 position, Quaternion roitation) {
-        return Instantiate(obj, position, roitation);
-    }
-    static public bool TryDropInventoryItem(InventoryItemSO inventoryItemSO, Vector3 desiredPosition) {
-        if (Physics.Raycast(desiredPosition, Vector3.down, out RaycastHit hit)) {
-            SpawnObject(inventoryItemSO.prefab, hit.point, Quaternion.Euler(hit.normal));
-            return true;
-        }
-        else {
-            Debug.LogError("me. Can't drop item");
-            return false;
-        }
+    static public GameObject SpawnObject(GameObject obj, Vector3 position, Quaternion rotation) {
+        return Instantiate(obj, position, rotation);
     }
 
 

@@ -21,8 +21,8 @@ public class InputManager : MonoBehaviour {
     }
 
     private void Awake() {
-        DontDestroyOnLoad(gameObject);
         Instance = this;
+        DontDestroyOnLoad(gameObject);
 
         inputActions = new InputActions();
         inputActions.Enable();
@@ -36,9 +36,6 @@ public class InputManager : MonoBehaviour {
 
         inputActions.Inventory.DropItemB.started += (_) => OnInventoryDropItemDown(inputActions.Inventory.CursorV2.ReadValue<Vector2>());
         inputActions.Inventory.InventoryB.started += (_) => ChangeState(InputState.Inventory);
-
-
-        Cursor.lockState = CursorLockMode.Locked;
     }
     private void Start() {
         ChangeState(InputState.Character);

@@ -6,6 +6,6 @@ public class RaidTask {
 
     public SceneReference raidScene;
 
-
+    public string data = "some data";
 
 }

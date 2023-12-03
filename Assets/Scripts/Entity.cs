@@ -25,10 +25,15 @@ public class Entity : MonoBehaviour {
         foreach (InventoryItemSO item in itemsToDropOnDied) {
             float angle = Random.Range(0, 360f) * Mathf.Deg2Rad;
             float upOffset = 0.5f;
-            Vector3 randomDirection = new Vector3(Mathf.Sin(angle), upOffset, Mathf.Cos(angle));
-            randomDirection *= Random.Range(0, 1f);
+            float maxDistance = 1;
+            Vector3 position = new Vector3(Mathf.Sin(angle), upOffset, Mathf.Cos(angle)) * Random.Range(0, maxDistance);
+            Vector3 direction = Vector3.up;
 
-            SpawnManager.TryDropInventoryItem(item, transform.position + randomDirection);
+            if (Physics.Raycast(transform.position + position, Vector3.down, out RaycastHit hit)) {
+                position = transform.position + position + Vector3.down * (hit.distance - 0.1f);
+                direction = hit.normal;
+            }
+            SpawnManager.SpawnObject(item.prefab, position, Quaternion.Euler(direction));
         }
         Destroy(gameObject);
         Debug.Log("Enity " + entityName + " died", this);
