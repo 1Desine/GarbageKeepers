@@ -32,10 +32,10 @@ public class InventoryUI : MonoBehaviour {
         InputManager.OnInventoryDropItemDown -= InputManager_OnInventoryDropItemDown;
     }
 
-    public void UpdateItems(List<Inventory.Cell> inventoryCellsList) {
-        for (int i = 0; i < inventoryCells.Count; i++) {
-            if (inventoryCellsList[i].inventoryItemSO == null) inventoryCells[i].RemoveItem();
-            else inventoryCells[i].SetItem(inventoryCellsList[i].inventoryItemSO);
+    static public void UpdateItems(List<Inventory.Cell> inventoryCellsList) {
+        for (int i = 0; i < Instance.inventoryCells.Count; i++) {
+            if (inventoryCellsList[i].inventoryItemSO == null) Instance.inventoryCells[i].RemoveItem();
+            else Instance.inventoryCells[i].SetItem(inventoryCellsList[i].inventoryItemSO);
         }
     }
 

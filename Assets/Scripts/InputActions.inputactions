@@ -42,7 +42,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "PickUpItemB",
+                    "name": "MainActionB",
                     "type": "Button",
                     "id": "297a4b5e-f182-43c8-9c23-cf54328437c9",
                     "expectedControlType": "Button",
@@ -183,7 +183,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "PickUpItemB",
+                    "action": "MainActionB",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

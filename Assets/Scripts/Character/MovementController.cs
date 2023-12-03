@@ -94,7 +94,7 @@ public class MovementController : MonoBehaviour {
         }
         return false;
     }
-    public bool CastSelf(Vector3 position, Vector3 direction, out RaycastHit hit) {
+    private bool CastSelf(Vector3 position, Vector3 direction, out RaycastHit hit) {
         // Get Parameters associated with the KCC
         Vector3 center = capsuleCollider.center + position;
         float radius = capsuleCollider.radius;

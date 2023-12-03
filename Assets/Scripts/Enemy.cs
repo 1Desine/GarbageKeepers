@@ -10,9 +10,9 @@ public class Enemy : Entity {
         entityName = "Enemy";
     }
 
-    protected override void PrepairItemsToDropAndDie() {
+    protected override void PrepairAndDie() {
         if (posibleItemsToDrop.Count != 0) itemsToDropOnDied.Add(posibleItemsToDrop[Random.Range(0, posibleItemsToDrop.Count)]);
-        base.PrepairItemsToDropAndDie();
+        base.PrepairAndDie();
     }
 
 }

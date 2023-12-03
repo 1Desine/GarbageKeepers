@@ -16,9 +16,9 @@ public class Entity : MonoBehaviour {
     }
     public void Damage(int damage) {
         health -= damage;
-        if (health <= 0) PrepairItemsToDropAndDie();
+        if (health <= 0) PrepairAndDie();
     }
-    protected virtual void PrepairItemsToDropAndDie() {
+    protected virtual void PrepairAndDie() {
         Die();
     }
     private void Die() {

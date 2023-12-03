@@ -61,8 +61,8 @@ public class PlayerController : MonoBehaviour {
         if (Physics.Raycast(neck.position, neck.forward, out RaycastHit hit, dropDistance)) desiredPoint = neck.position + neck.forward * (hit.distance - 0.01f);
         return desiredPoint;
     }
-    public bool LookingAt(float lookDistance, out RaycastHit hit) {
-        IEnumerable<RaycastHit> hits = Physics.RaycastAll(neck.position, neck.forward, lookDistance, ~0, QueryTriggerInteraction.Ignore)
+    public bool LookingAt(float reachDistance, out RaycastHit hit) {
+        IEnumerable<RaycastHit> hits = Physics.RaycastAll(neck.position, neck.forward, reachDistance, ~0, QueryTriggerInteraction.Ignore)
             .Where(hit => hit.collider.transform != transform);
         bool didHit = hits.Count() > 0;
 

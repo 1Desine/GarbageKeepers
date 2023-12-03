@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -16,34 +14,22 @@ public class Inventory : MonoBehaviour {
 
 
     private void Awake() {
-        Cursor.lockState = CursorLockMode.Locked;
-
         Instance = this;
     }
     private void Start() {
-        InventoryUI.Instance.UpdateItems(cells);
+        UpdateInventoryItems();
 
         CharacterMovement = GetComponent<PlayerController>();
     }
-    private void OnEnable() {
-        InputManager.OnPickUpItem += InputManager_OnPickUpItem;
-    }
-    private void OnDisable() {
-        InputManager.OnPickUpItem -= InputManager_OnPickUpItem;
-    }
 
-
+    private void UpdateInventoryItems() {
+        InventoryUI.UpdateItems(cells);
+    }
     public void RemoveItem(int index) {
         cells[index].inventoryItemSO = null;
-        InventoryUI.Instance.UpdateItems(cells);
+        UpdateInventoryItems();
     }
 
-    public void InputManager_OnPickUpItem() {
-        float pickUpDistance = 3;
-        if (CharacterMovement.LookingAt(pickUpDistance, out RaycastHit hit)) {
-            if (hit.collider.TryGetComponent(out ItemObject itemObject)) TryPickUpItem(itemObject);
-        }
-    }
     public void TryDropItem(int index) {
         if (cells[index].inventoryItemSO != null) {
             if (SpawnManager.TryDropInventoryItem(cells[index].inventoryItemSO, CharacterMovement.GetItemDropPoint())) {
@@ -51,11 +37,12 @@ public class Inventory : MonoBehaviour {
             }
         }
     }
-    private void TryPickUpItem(ItemObject itemObject) {
-        if (TryAddItemToInventory(itemObject.inventoryItemSO)) {
-            Destroy(itemObject.gameObject);
-            InventoryUI.Instance.UpdateItems(cells);
+    public bool TryPickUpItem(InventoryItemSO inventoryItemSO) {
+        if (TryAddItemToInventory(inventoryItemSO)) {
+            UpdateInventoryItems();
+            return true;
         }
+        return false;
     }
     private bool TryAddItemToInventory(InventoryItemSO inventoryItemSO) {
         for (int i = 0; i < cells.Count; i++) {

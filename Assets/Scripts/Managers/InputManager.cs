@@ -10,7 +10,7 @@ public class InputManager : MonoBehaviour {
     static public Action OnJumpDown = () => { };
     static public Action OnAttackDown = () => { };
     static public Action<Vector2> OnInventoryDropItemDown = (_) => { };
-    static public Action OnPickUpItem = () => { };
+    static public Action OnMainActionB = () => { };
     static public Action<int> OnUseQuickSlot = (_) => { };
 
     private InputState inputState = InputState.Character;
@@ -21,6 +21,7 @@ public class InputManager : MonoBehaviour {
     }
 
     private void Awake() {
+        DontDestroyOnLoad(gameObject);
         Instance = this;
 
         inputActions = new InputActions();
@@ -28,13 +29,16 @@ public class InputManager : MonoBehaviour {
 
         inputActions.Character.Jump.started += _ => OnJumpDown();
         inputActions.Character.Attack.started += _ => OnAttackDown();
-        inputActions.Character.PickUpItemB.started += (_) => OnPickUpItem();
+        inputActions.Character.MainActionB.started += (_) => OnMainActionB();
         inputActions.Character.QuickSlot1.started += (_) => OnUseQuickSlot(0);
         inputActions.Character.QuickSlot2.started += (_) => OnUseQuickSlot(1);
         inputActions.Character.QuickSlot3.started += (_) => OnUseQuickSlot(2);
 
         inputActions.Inventory.DropItemB.started += (_) => OnInventoryDropItemDown(inputActions.Inventory.CursorV2.ReadValue<Vector2>());
         inputActions.Inventory.InventoryB.started += (_) => ChangeState(InputState.Inventory);
+
+
+        Cursor.lockState = CursorLockMode.Locked;
     }
     private void Start() {
         ChangeState(InputState.Character);

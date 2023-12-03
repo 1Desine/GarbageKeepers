@@ -27,28 +27,25 @@ public class CharacterItemsHandler : MonoBehaviour {
     }
 
     private void InputManager_OnAttackDown() {
-        if (Time.time - lastAttackTime < coolDown) return;
-
+        if (Time.time - lastAttackTime < this.coolDown) return;
         lastAttackTime = Time.time;
+
+
+        float attackDistance = 1;
+        int damage = 5;
+        float coolDown = 0.3f;
         if (inventory.TryGetItem(10, out InventoryItemSO item)) {
             WeaponItemSO weaponItemSO = item as WeaponItemSO;
+
+            attackDistance = weaponItemSO.attackDistance;
+            damage = weaponItemSO.damage;
             coolDown = weaponItemSO.cooldown;
-            if (movement.LookingAt(weaponItemSO.attackDistance, out RaycastHit hit)) {
-                if (hit.collider.TryGetComponent(out Entity entity)) {
-                    entity.Damage(weaponItemSO.damage);
-                    Debug.Log("Attack with Item: " + weaponItemSO.tag + " with name: " + weaponItemSO.itemName);
-                }
-            }
         }
-        else {
-            coolDown = 0.3f;
-            float attackDistance = 1f;
-            int damage = 5;
-            if (movement.LookingAt(attackDistance, out RaycastHit hit)) {
-                if (hit.collider.TryGetComponent(out Entity entity)) {
-                    entity.Damage(damage);
-                    Debug.Log("Attack with empty hand");
-                }
+
+        if (movement.LookingAt(attackDistance, out RaycastHit hit)) {
+            if (hit.transform.root.TryGetComponent(out Entity entity)) {
+                entity.Damage(damage);
+                this.coolDown = coolDown;
             }
         }
     }

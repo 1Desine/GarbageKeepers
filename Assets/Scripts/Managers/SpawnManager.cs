@@ -5,13 +5,20 @@ using UnityEngine;
 public class SpawnManager : MonoBehaviour {
     static public SpawnManager Instance { get; private set; }
 
+    [SerializeField] GameObject playerPrefab;
 
     private void Awake() {
+        DontDestroyOnLoad(gameObject);
+
         Instance = this;
     }
+    private void Start() {
+        Character character = SpawnObject(playerPrefab, Vector3.zero, Quaternion.identity).GetComponent<Character>();
+        GameManager.PlaceCharacterAtSpawnPosition(character);
+    }
 
-    static public void SpawnObject(GameObject obj, Vector3 position, Quaternion roitation) {
-        Instantiate(obj, position, roitation);
+    static public GameObject SpawnObject(GameObject obj, Vector3 position, Quaternion roitation) {
+        return Instantiate(obj, position, roitation);
     }
     static public bool TryDropInventoryItem(InventoryItemSO inventoryItemSO, Vector3 desiredPosition) {
         if (Physics.Raycast(desiredPosition, Vector3.down, out RaycastHit hit)) {
