@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/HomeScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
-    path: Assets/Scenes/DangeonScene.unity
+    path: Assets/Scenes/RaidScene.unity
     guid: dea4d74310258a849922263270dfc9e0
+  - enabled: 1
+    path: Assets/Scenes/UI.unity
+    guid: b7355a954fd68e14bac8178edc0c6c99
   m_configObjects: {}

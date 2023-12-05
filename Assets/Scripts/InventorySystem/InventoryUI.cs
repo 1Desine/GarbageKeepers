@@ -24,22 +24,37 @@ public class InventoryUI : MonoBehaviour {
             inventoryCells[i].index = i;
         }
     }
+    private void Start() {
+        InputManager.OnInputStateChange += InputManager_OnInputStateChange;
+
+        Hide();
+    }
+    private void OnDestroy() {
+        InputManager.OnInputStateChange -= InputManager_OnInputStateChange;
+    }
 
     private void OnEnable() {
         InputManager.OnInventoryDropItemDown += InputManager_OnInventoryDropItemDown;
+        Inventory.OnItemsUpdated += Inventory_OnItemsUpdated;
+
+        Inventory.UpdateInventoryItems();
     }
     private void OnDisable() {
         InputManager.OnInventoryDropItemDown -= InputManager_OnInventoryDropItemDown;
+        Inventory.OnItemsUpdated -= Inventory_OnItemsUpdated;
     }
 
-    static public void UpdateItems(List<Inventory.Cell> inventoryCellsList) {
-        for (int i = 0; i < Instance.inventoryCells.Count; i++) {
-            if (inventoryCellsList[i].inventoryItemSO == null) Instance.inventoryCells[i].RemoveItem();
-            else Instance.inventoryCells[i].SetItem(inventoryCellsList[i].inventoryItemSO);
+    private void Inventory_OnItemsUpdated(List<Inventory.Cell> inventoryCellsList) {
+        for (int i = 0; i < inventoryCells.Count; i++) {
+            if (inventoryCellsList[i].inventoryItemSO == null) inventoryCells[i].RemoveItem();
+            else inventoryCells[i].SetItem(inventoryCellsList[i].inventoryItemSO);
         }
     }
-
-    public void Hide() {
+    private void InputManager_OnInputStateChange(InputManager.InputState inputState) {
+        if (inputState == InputManager.InputState.Inventory) Show();
+        else Hide();
+    }
+    public void Hide() { 
         gameObject.SetActive(false);
     }
     public void Show() {

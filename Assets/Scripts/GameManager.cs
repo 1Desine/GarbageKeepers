@@ -11,6 +11,10 @@ public class GameManager : MonoBehaviour {
 
 
     private void Awake() {
+        if (Instance != null) {
+            Destroy(gameObject);
+            return;
+        }
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
@@ -20,9 +24,4 @@ public class GameManager : MonoBehaviour {
     static public void Unregistercharacter(Character character) {
         Instance.charactersDictionary.Remove(Instance.charactersDictionary.FirstOrDefault(x => x.Value == character).Key);
     }
-    static public void SwitchScene(RaidTask raidTask = null) {
-        if (SceneHandler.inRaid) SceneHandler.LoadSceneHome();
-        else if (raidTask != null) SceneHandler.LoadRaidScene(raidTask);
-    }
-
 }

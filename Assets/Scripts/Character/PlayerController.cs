@@ -24,13 +24,14 @@ public class PlayerController : MonoBehaviour {
     }
     private void OnEnable() {
         InputManager.OnJumpDown += movementController.TryJump;
+        SceneHandler.OnSceneLoaded += PlaceCharacterAtSpawnPosition;
     }
     private void OnDisable() {
         InputManager.OnJumpDown -= movementController.TryJump;
+        SceneHandler.OnSceneLoaded -= PlaceCharacterAtSpawnPosition;
     }
     private void Start() {
         PlaceCharacterAtSpawnPosition();
-        SceneManager.sceneLoaded += (Scene, LoadSceneMode) => PlaceCharacterAtSpawnPosition();
     }
     private void Update() {
         HandleLook();
@@ -41,13 +42,11 @@ public class PlayerController : MonoBehaviour {
 
 
     private void PlaceCharacterAtSpawnPosition() {
-        List<Transform> spawnTransforms = ScenePropperties.GetSpawnPositions();
+        List<Transform> spawnTransforms = Level.GetSpawnPositions();
         int positionIndex = Random.Range(0, spawnTransforms.Count);
 
         transform.position = spawnTransforms[positionIndex].position;
         lookVector = new Vector2(spawnTransforms[positionIndex].eulerAngles.x, 0);
-
-        Debug.Log("deeee");
     }
 
     private void HandleLook() {

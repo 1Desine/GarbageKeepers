@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SpawnManager : MonoBehaviour {
@@ -8,16 +6,18 @@ public class SpawnManager : MonoBehaviour {
     [SerializeField] GameObject playerPrefab;
 
     private void Awake() {
-        DontDestroyOnLoad(gameObject);
-
+        if (Instance != null) {
+            Destroy(gameObject);
+            return;
+        }
         Instance = this;
-
-        SpawnObject(playerPrefab, Vector3.zero, Quaternion.identity);
+        DontDestroyOnLoad(gameObject);
     }
-
     static public GameObject SpawnObject(GameObject obj, Vector3 position, Quaternion rotation) {
         return Instantiate(obj, position, rotation);
     }
-
+    static public void SpawnPlayer() {
+        SpawnObject(Instance.playerPrefab, Vector3.zero, Quaternion.identity);
+    }
 
 }

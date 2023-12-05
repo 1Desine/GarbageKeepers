@@ -1,33 +1,26 @@
-using Eflatun.SceneReference;
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.TextCore.Text;
 
-public class SceneHandler : MonoBehaviour {
-    static public SceneHandler Instance { get; private set; }
+public static class SceneHandler {
 
-
-    [SerializeField] SceneReference homeScene;
+    public enum Scene {
+        HomeScene,
+        RaidScene,
+    }
 
 
     static public RaidTask raidTask;
     static public bool inRaid => raidTask != null;
-
-
-    private void Awake() {
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
-    }
+    static public Action OnSceneLoaded = () => { };
 
 
 
-    static public void LoadSceneHome() {
-        raidTask = null;
-        SceneManager.LoadScene(Instance.homeScene.Name);
-    }
-    static public void LoadRaidScene(RaidTask raidTask) {
+
+    static public void LoadScene(Scene scene, RaidTask raidTask = null) {
         SceneHandler.raidTask = raidTask;
-        SceneManager.LoadScene(raidTask.raidScene.Name);
+        SceneManager.LoadScene(scene.ToString());
+        OnSceneLoaded();
     }
 
 }

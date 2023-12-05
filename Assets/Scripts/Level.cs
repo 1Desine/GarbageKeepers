@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ScenePropperties : MonoBehaviour {
-    static public ScenePropperties Instance { get; private set; }
+public class Level : MonoBehaviour {
+    static public Level Instance { get; private set; }
 
     [SerializeField] Transform spawnPositionsHolder;
 

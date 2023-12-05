@@ -61,7 +61,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3330035971384137550}
   - {fileID: 2253187132518481852}
   m_Father: {fileID: 1353875092296582948}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -91,12 +90,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3582316168764624260}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.326}
-  m_LocalScale: {x: 0.038159866, y: 0.038159866, z: 0.65272}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.15}
+  m_LocalScale: {x: 0.038159866, y: 0.038159866, z: 0.3}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 968114127400310014}
+  m_Father: {fileID: 2253187132518481852}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2099688734681796426
 MeshFilter:
@@ -362,12 +361,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 100
   maxHealth: 100
+  inventory: {fileID: 0}
   visual: {fileID: 4800403102713475458}
   reachDistance: 3
-  raidTask:
-    raidScene:
-      asset: {fileID: 0}
-      guid: 00000000000000000000000000000000
 --- !u!114 &2397515124792578704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -383,7 +379,7 @@ MonoBehaviour:
   characterAnimator: {fileID: 794129050133743530}
   neck: {fileID: 968114127400310014}
   mouseSensitivity: 0.05
-  moveAcceliration: 30
+  moveAcceliration: 20
   walkSpeed: 3
   runSpeed: 6
 --- !u!114 &5799339706105165691
@@ -493,10 +489,11 @@ Transform:
   m_GameObject: {fileID: 7978405432647634106}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.2, z: 0.1}
+  m_LocalPosition: {x: 0, y: 0.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 3330035971384137550}
   m_Father: {fileID: 968114127400310014}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &9206724601252823008
@@ -530,7 +527,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.1
+  near clip plane: 0.01
   far clip plane: 1000
   field of view: 80
   orthographic: 0
@@ -557,7 +554,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7978405432647634106}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!1001 &761923396919953162
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -5,7 +5,7 @@ using UnityEngine.TextCore.Text;
 
 public class Character : Entity {
 
-    private Inventory inventory;
+    public Inventory inventory;
     private PlayerController playerController;
     [SerializeField] GameObject visual;
 

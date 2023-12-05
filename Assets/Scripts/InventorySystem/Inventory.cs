@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 
 
@@ -12,6 +13,7 @@ public class Inventory : MonoBehaviour {
 
     private PlayerController CharacterMovement;
 
+    static public Action<List<Cell>> OnItemsUpdated = _ => { };
 
     private void Awake() {
         Instance = this;
@@ -22,8 +24,9 @@ public class Inventory : MonoBehaviour {
         CharacterMovement = GetComponent<PlayerController>();
     }
 
-    private void UpdateInventoryItems() {
-        InventoryUI.UpdateItems(cells);
+    static public void UpdateInventoryItems() {
+        if (Instance == null) return;
+        OnItemsUpdated(Instance.cells);
     }
     public void RemoveItem(int index) {
         cells[index].inventoryItemSO = null;
@@ -65,6 +68,13 @@ public class Inventory : MonoBehaviour {
         }
         item = null;
         return false;
+    }
+    public List<InventoryItemSO> GetItemsList() {
+        List<InventoryItemSO> items = new();
+        foreach(Cell cell in cells) {
+            if(cell.inventoryItemSO != null) items.Add(cell.inventoryItemSO);
+        }
+        return items;
     }
 
     [Serializable]

@@ -5,22 +5,29 @@ public class InputManager : MonoBehaviour {
     static public InputManager Instance { get; private set; }
 
 
-    private InputActions inputActions;
-
     static public Action OnJumpDown = () => { };
     static public Action OnAttackDown = () => { };
     static public Action<Vector2> OnInventoryDropItemDown = (_) => { };
     static public Action OnMainActionB = () => { };
     static public Action<int> OnUseQuickSlot = (_) => { };
 
+
+    private InputActions inputActions;
+
+    static public Action<InputState> OnInputStateChange = _ => { };
+
     private InputState inputState = InputState.Character;
-    private enum InputState {
+    public enum InputState {
         Character,
         Inventory,
         Settings,
     }
 
     private void Awake() {
+        if (Instance != null) {
+            Destroy(gameObject);
+            return;
+        }
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
@@ -37,14 +44,14 @@ public class InputManager : MonoBehaviour {
         inputActions.Inventory.DropItemB.started += (_) => OnInventoryDropItemDown(inputActions.Inventory.CursorV2.ReadValue<Vector2>());
         inputActions.Inventory.InventoryB.started += (_) => ChangeState(InputState.Inventory);
     }
-    private void Start() {
-        ChangeState(InputState.Character);
-    }
-
     static public Vector2 MoveV2N() => Instance.inputActions.Character.MoveV2N.ReadValue<Vector2>();
     static public Vector2 LookV2D() => Instance.inputActions.Character.LookV2D.ReadValue<Vector2>();
     static public bool GetSpringButton() => Instance.inputActions.Character.SprintB.inProgress;
 
+
+    static public void PlayerSpawned() {
+        Instance.ChangeState(InputState.Character);
+    }
     private void ChangeState(InputState inputState) {
         if (this.inputState == inputState) {
             this.inputState = InputState.Character;
@@ -54,34 +61,33 @@ public class InputManager : MonoBehaviour {
 
             inputActions.Inventory.DropItemB.Disable();
 
-            InventoryUI.Instance.Hide();
             Cursor.lockState = CursorLockMode.Locked;
-
-            return;
         }
+        else {
+            switch (inputState) {
+                case InputState.Inventory: {
+                    this.inputState = InputState.Inventory;
+                    inputActions.Character.Attack.Disable();
+                    inputActions.Character.LookV2D.Disable();
 
-        switch (inputState) {
-            case InputState.Inventory: {
-                this.inputState = InputState.Inventory;
-                inputActions.Character.Attack.Disable();
-                inputActions.Character.LookV2D.Disable();
+                    inputActions.Inventory.DropItemB.Enable();
 
-                inputActions.Inventory.DropItemB.Enable();
+                    Cursor.lockState = CursorLockMode.None;
 
-                InventoryUI.Instance.Show();
-                Cursor.lockState = CursorLockMode.None;
+                    break;
+                }
+                case InputState.Settings: {
+                    this.inputState = InputState.Settings;
+                    inputActions.Character.Attack.Disable();
+                    inputActions.Character.MoveV2N.Disable();
+                    inputActions.Character.LookV2D.Disable();
 
-                break;
-            }
-            case InputState.Settings: {
-                this.inputState = InputState.Settings;
-                inputActions.Character.Attack.Disable();
-                inputActions.Character.MoveV2N.Disable();
-                inputActions.Character.LookV2D.Disable();
-
-                break;
+                    break;
+                }
             }
         }
+
+        OnInputStateChange(this.inputState);
     }
 
 }
